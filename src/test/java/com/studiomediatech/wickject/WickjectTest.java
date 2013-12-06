@@ -21,6 +21,16 @@ public class WickjectTest {
     this.tester = new WicketTester();
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void ensureWickjectAddInjectorThrowsOnNullParameter() throws Exception {
+    Wickject.addInjector(null);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void ensureWickjectorThrowsWhenPassedNullType() throws Exception {
+    Wickject.addInjector(this.tester).provides(this, null);
+  }
+
   @Test
   public void ensureFieldIsNotInjectedWhenNothingProvided() {
 

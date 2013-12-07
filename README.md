@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/olle/wickject.png)](https://travis-ci.org/olle/wickject)
+
 Wickject
 ========
 

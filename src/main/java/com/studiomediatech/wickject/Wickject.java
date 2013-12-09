@@ -22,7 +22,7 @@ import org.apache.wicket.util.tester.WicketTester;
  * 
  * <p>
  * The main idea is to present a single, and very very sleak, interface to the
- * user. The {@link #addInjector(tester)} method returns a chainable instance,
+ * user. The {@code #addInjector(tester)} method returns a chainable instance,
  * so it's very much a fluid micro-API that should be convenient. The user
  * probably wants to be able to add provision of mocks or stubs, and probably
  * not just one.

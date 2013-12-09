@@ -3,20 +3,20 @@
 Wickject
 ========
 
-When starting that application context just takes forever.
+When starting that application just seems to take forever.
 ----------------------------------------------------------
 
 This small project deals with a very real itch that I just can't wait to scratch!
 
 ### The long wait
 
-When working with Wicket and web projects that uses Spring dependency injection, unit testing can easily become a waiting game. Caused by large application contexts that needs to be fully started, or even create database schemas sometimes, the time for tests can quickly become a painfully slow.
+When working with Wicket and web projects that uses dependency injection, unit testing can easily become a waiting game. Caused by large application contexts that needs to be fully started, sometimes even creating database schemas and filling default data, the time for tests can quickly become painfully slow, grinding productivity to a halt.
 
-One way to do it (doing it wrong) is to write specific test application contexts. Yeah right, like I'm like, doing that for like, a lot of tests.... NOT!
+One way to solve this problem is to write specific test application contexts. Yeah right, like I'm like, doing that for like, a lot of tests.... NOT!
 
-### A quicker draw
+### A better approach
 
-In an effort to reduce startup time I want to throw together this little helper, that can be used as a simple setup for unit-testing and mocking in conjunction with the Wicket tester.
+When your tests are suitable for mocking, you should be able to quickly start your application and selectively mock out the services required for your tests.
 
 Attacking the core issue, __Wickject__ provides a small IOC tool for testing, that makes dependency injection a selective task rather than a boring configuration chore.
 

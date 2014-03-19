@@ -3,38 +3,29 @@
 Wickject
 ========
 
-When starting that application just seems to take forever.
-----------------------------------------------------------
+### A minimal dependency injector for unit testing [Wicket](http://wicket.apache.org) projects.
 
-This small project deals with a very real itch that I just can't wait to scratch!
+## Getting started
 
-### The long wait
+__1 Add the `wickject` dependency to your project:__
 
-When working with Wicket and web projects that uses dependency injection, unit testing can easily become a waiting game. Caused by large application contexts that needs to be fully started, sometimes even creating database schemas and filling default data, the time for tests can quickly become painfully slow, grinding productivity to a halt.
+_NOTE: There's currently no artifact in Maven Central or Sonatype OSS, but I'm working on it. Stay tuned for updates!_
 
-One way to solve this problem is to write specific test application contexts. Yeah right, like I'm like, doing that for like, a lot of tests.... NOT!
+For now, clone this repository, do a `mvn install` and then use the current SNAPSHOT version, adding the following to your project:
 
-### A better approach
+    <dependency>
+      <groupId>com.studiomediatech.wickject</groupId>
+      <artifactId>wickject</artifactId>
+      <version>[[PROJECT VERSION]]</version>
+    </dependency>
 
-When your tests are suitable for mocking, you should be able to quickly start your application and selectively mock out the services required for your tests.
-
-Attacking the core issue, __Wickject__ provides a small IOC tool for testing, that makes dependency injection a selective task rather than a boring configuration chore.
-
-### Getting started
-
-__1 Add dependency to your Wicket project__
-
-NOTE: Currently there's no artifact in Maven Central or Sonatype OSS, but I'm working on it. There will be a POM dependency definition here in the near future.
-
-For now you will have to clone this repository, do a `mvn install` and then use the current SNAPSHOT version.
-
-__2 Add an injector to your Wicket Tester__
+__2 Enhance your WicketTester with the Wickjects injector:__
 
     WicketTester tester = new WicketTester();
     Wickjector injector = Wickject.addInjector(tester);
 
     
-__3 Add provides for your services and beans__
+__3 Add `provides` for your services and beans:__
 
     injector.provides(Mockito.mock(ServiceA.class), ServiceA.class);
     injector.provides(Mockito.mock(ServiceB.class), ServiceB.class);
@@ -42,11 +33,27 @@ __3 Add provides for your services and beans__
     
 __4 Done!__
 
-As usual there's no step 4. Just go testing already. Yes! It's that simple!
+And... there's no step four. Just go testing already. Yes! It's _that_ simple!
     
+## Now why would I ever...
+
+When working with Wicket and web projects that uses dependency injection, testing might easily become a waiting game. With large application contexts that needs to be fully started, sometimes even creating database schemas and filling in default data, the time it takes the tests to run may quickly become painfully slow, grinding productivity to a halt.
+
+One way to solve this problem is to write specific test application contexts. Yeah right, like I'm like, doing that for like, a lot of tests.... NOT!
+
+### A better approach
+
+When your tests are suitable for mocking, you should always be able to quickly start your application and selectively mock out the services required for your tests.
+
+Attacking the core issue, __Wickject__ provides a small IOC tool for testing, that makes dependency injection a selective task rather than a boring configuration chore.
+
+### No extra code for tests
+
+Using __Wickject__ you can remove the need for extra code just to make your components and classes testable. No more package protected constructors. This makes sure you're only testing actual production code and nothing else.
+
 ### The fluid interface
 
-You can use a shorter syntax with the chaining API too, which probably better fit the needs when mocking for tests.
+__Wickject__ has short and fluid syntax for easy programmatic use. The chaining API hits the sweet spot when setting up mocks.
 
     Wickject.addInjector(tester)
         .provides(Mockito.mock(A.class), A.class)

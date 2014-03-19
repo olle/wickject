@@ -25,18 +25,18 @@ public class WickjectTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void ensureWickjectAddInjectorThrowsOnNullParameter() throws Exception {
-    Wickject.addInjector(null);
+    Wickject.addInjectorTo(null);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void ensureWickjectorThrowsWhenPassedNullType() throws Exception {
-    Wickject.addInjector(this.tester).provides(this, null);
+    Wickject.addInjectorTo(this.tester).provides(this, null);
   }
 
   @Test
   public void ensureFieldIsNotInjectedWhenNothingProvided() {
 
-    Wickject.addInjector(this.tester);
+    Wickject.addInjectorTo(this.tester);
 
     FooService injectedService = new Foo().foo;
 
@@ -46,7 +46,7 @@ public class WickjectTest {
   @Test
   public void ensureFieldIsInjectedWhenProvidesObjectForType() {
 
-    Wickjector injector = Wickject.addInjector(this.tester);
+    Wickjector injector = Wickject.addInjectorTo(this.tester);
 
     FooService mockedService = Mockito.mock(FooService.class);
     injector.provides(mockedService, FooService.class);
@@ -60,7 +60,7 @@ public class WickjectTest {
   @Test
   public void ensureFieldIsNotInjectedWhenProvidesObjectForOtherTypeOnly() throws Exception {
 
-    Wickjector injector = Wickject.addInjector(this.tester);
+    Wickjector injector = Wickject.addInjectorTo(this.tester);
 
     BarService mockedService = Mockito.mock(BarService.class);
     injector.provides(mockedService, BarService.class);
@@ -73,7 +73,7 @@ public class WickjectTest {
   @Test
   public void ensureBothFieldsInjectedWhenProvidesBothTypes() throws Exception {
 
-    Wickjector injector = Wickject.addInjector(this.tester);
+    Wickjector injector = Wickject.addInjectorTo(this.tester);
 
     FooService fooMock = Mockito.mock(FooService.class);
     BarService barMock = Mockito.mock(BarService.class);
@@ -93,7 +93,7 @@ public class WickjectTest {
   public void ensureInjectsWicketComponent() {
 
     MyFoo myFoo = new MyFoo();
-    Wickject.addInjector(this.tester).provides(myFoo, FooService.class);
+    Wickject.addInjectorTo(this.tester).provides(myFoo, FooService.class);
 
     FooComponent foo = new FooComponent("foo");
 
@@ -105,7 +105,7 @@ public class WickjectTest {
   public void ensureInjectsWicketBehavior() {
     MyFoo myFoo = new MyFoo();
     MyBar myBar = new MyBar();
-    Wickject.addInjector(this.tester).provides(myFoo, FooService.class).provides(myBar, BarService.class);
+    Wickject.addInjectorTo(this.tester).provides(myFoo, FooService.class).provides(myBar, BarService.class);
 
     FooComponent fooComponent = new FooComponent("foo");
     BarBehavior bar = new BarBehavior();
@@ -123,14 +123,16 @@ public class WickjectTest {
     void bar();
   }
 
-  private class MyFoo implements FooService {
+  private class MyFoo
+      implements FooService {
     @Override
     public void foo() {
       // ok
     }
   }
 
-  private class MyBar implements BarService {
+  private class MyBar
+      implements BarService {
     @Override
     public void bar() {
       // Ok
@@ -158,22 +160,24 @@ public class WickjectTest {
     }
   }
 
-  private class FooComponent extends WebMarkupContainer {
+  private class FooComponent
+      extends WebMarkupContainer {
 
     private static final long serialVersionUID = 1L;
 
     @Inject
-    private FooService fooService;
+    private FooService        fooService;
 
     public FooComponent(String id) {
       super(id);
     }
   }
 
-  private class BarBehavior extends Behavior {
+  private class BarBehavior
+      extends Behavior {
 
     @Inject
-    private BarService barService;
+    private BarService        barService;
 
     private static final long serialVersionUID = 1L;
 

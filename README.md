@@ -7,7 +7,7 @@ Wickject
 
 ## Getting started
 
-__1 Add the `wickject` dependency to your project:__
+__1. Add the `wickject` dependency to your project:__
 
 _NOTE: There's currently no artifact in Maven Central or Sonatype OSS, but I'm working on it. Stay tuned for updates!_
 
@@ -19,19 +19,19 @@ For now, clone this repository, do a `mvn install` and then use the current SNAP
       <version>[[PROJECT VERSION]]</version>
     </dependency>
 
-__2 Enhance your WicketTester with the Wickjects injector:__
+__2. Enhance your WicketTester with the Wickjects injector:__
 
     WicketTester tester = new WicketTester();
-    Wickjector injector = Wickject.addInjector(tester);
+    Wickjector injector = Wickject.addInjectorTo(tester);
 
     
-__3 Add `provides` for your services and beans:__
+__3. Add `provides` for your services and beans:__
 
     injector.provides(Mockito.mock(ServiceA.class), ServiceA.class);
     injector.provides(Mockito.mock(ServiceB.class), ServiceB.class);
     injector.provides(new ServiceCImpl(), ServiceC.class);
     
-__4 Done!__
+__4. Done!__
 
 And... there's no step four. Just go testing already. Yes! It's _that_ simple!
     
@@ -55,7 +55,7 @@ Using __Wickject__ you can remove the need for extra code just to make your comp
 
 __Wickject__ has short and fluid syntax for easy programmatic use. The chaining API hits the sweet spot when setting up mocks.
 
-    Wickject.addInjector(tester)
+    Wickject.addInjectorTo(tester)
         .provides(Mockito.mock(A.class), A.class)
         .provides(Mockito.mock(B.class), B.class)
         .provides(new C(), C.class);

@@ -63,3 +63,11 @@ __Wickject__ has short and fluid syntax for easy programmatic use. The chaining 
         
  
 Happy blazingly fast testing with Wicket!
+
+#### Changelog
+
+* `v0.3.0` - No more Mr. Nice Guy, **Wickject** will now throw when it encounters fields for injections, that are not provided for with the `provides`-API.
+
+* `v0.2.0` - Minor API changes, trying out the more natural `addInjectorTo` instead of just `addInjector`.
+
+* `v0.1.0` - Initial API, it workses... yesss it does precious.

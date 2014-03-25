@@ -12,7 +12,7 @@
 
   <groupId>com.studiomediatech.wickject</groupId>
   <artifactId>wickject</artifactId>
-  <version>0.2.0-SNAPSHOT</version>
+  <version>0.3.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>Wickject</name>
@@ -114,7 +114,7 @@
         <plugin>
           <!-- **************************************************************** 
             This here is such a sad f**ing state of the Maven-nation, showing just how 
-            messed up and broken the eco system actually is. Makes me sick! -->
+            messed up and broken the eco-system actually is. Makes me sick! -->
           <groupId>org.eclipse.m2e</groupId>
           <artifactId>lifecycle-mapping</artifactId>
           <version>1.0.0</version>

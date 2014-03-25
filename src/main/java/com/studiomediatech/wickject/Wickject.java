@@ -13,7 +13,10 @@ import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.injection.IFieldValueFactory;
 import org.apache.wicket.injection.Injector;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.tester.WicketTester;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Now this is the story, all about how, this class got made, and where and why.
@@ -22,30 +25,49 @@ import org.apache.wicket.util.tester.WicketTester;
  * 
  * <p>
  * The main idea is to present a single, and very very sleek, interface to the
- * user. The <strong>{@code addInjectorTo}</strong> method returns a chainable
- * instance, so it's very much a fluid API that should be convenient for the
- * developer. The user probably wants to be able to add provision of mocks or
- * stubs, and probably not just one.
+ * user. The <strong>{@code addInjectorTo}</strong> method returns its own
+ * instance that may be chained, so it's very much a fluid API that should be
+ * convenient to the developer. The user probably wants to be able to easily add
+ * provision for several mocks or stubs at once.
  * </p>
  * 
  * <p>
- * This is how it can look, when used together with the Mockito library:
+ * This is how it can look, when used together with the <i>Mockito</i> mocking
+ * library:
  * </p>
  * 
  * <pre>
+ * WicketTester tester = new WicketTester();
+ * 
  * Wickject.addInjectorTo(tester)
  *   .provides(Mockito.mock(CustomerService.class), CustomerService.class)
- *   .provides(Mockito.mock(OrderServer.class), OrderService.class);
+ *   .provides(Mockito.mock(OrderService.class), OrderService.class);
  * </pre>
  * 
  * <p>
- * In the example above we provide two mocked services, for fields annotated
- * with <strong>{@code @Inject}</strong> that are matching the types.
+ * In the example above we provide two mocked services for fields annotated with
+ * <strong>{@code @Inject}</strong> that are of the matching service types.
+ * </p>
+ * 
+ * <p>
+ * During injection <b>Wickject</b> will throw {@code IllegalStateException} if
+ * it encounters any annotated fields that are not provided for. A lenient mode
+ * is currently not available.
  * </p>
  * 
  * @author Olle Törnström olle@studiomediatech.com
  */
 public final class Wickject {
+
+  /**
+   * The default empty constructor is hidden from public use. This is a utility
+   * class with a single, simple, static method.
+   * 
+   * @see #addInjectorTo(WicketTester)
+   */
+  private Wickject() {
+    // Ok
+  }
 
   /**
    * Adds the Wickject injector capabilities to the given {@code WicketTester}
@@ -65,19 +87,17 @@ public final class Wickject {
    * @see Wickjector
    */
   public static final Wickjector addInjectorTo(WicketTester tester) {
-    assertArg("The tester must not be null.", tester);
+
+    Args.notNull(tester, "tester");
+
     WebApplication application = tester.getApplication();
+
     Wickjection injector = new Wickjection(application);
+
     application.getBehaviorInstantiationListeners().add(injector);
     application.getComponentInstantiationListeners().add(injector);
+
     return new Wickjector(injector);
-  }
-
-  private static void assertArg(String message, Object arg) {
-
-    if (arg == null) {
-      throw new IllegalArgumentException(message);
-    }
   }
 
   /**
@@ -105,6 +125,8 @@ public final class Wickject {
   public final static class Wickjector {
 
     private final Wickjection injection;
+
+    static Logger LOGGER = LoggerFactory.getLogger(Wickject.class);
 
     private Wickjector(Wickjection injector) {
       this.injection = injector;
@@ -135,8 +157,8 @@ public final class Wickject {
      */
     public <T> Wickjector provides(T object, Class<T> forType) {
 
-      assertArg("The object to provide must not be null.", object);
-      assertArg("The type to provide for must not be null.", forType);
+      Args.notNull(object, "object");
+      Args.notNull(forType, "forType");
 
       this.injection.context.put(forType, object);
 
@@ -154,26 +176,23 @@ public final class Wickject {
    * Wicket injector to handle.
    * </p>
    */
-  private final static class Wickjection
+  final static class Wickjection
       extends Injector
       implements IComponentInstantiationListener, IBehaviorInstantiationListener, IFieldValueFactory {
 
     private final Map<Class<?>, Object> context = new HashMap<>();
 
-    public <T> Wickjection(WebApplication application) {
-
+    public Wickjection(WebApplication application) {
       bind(application);
     }
 
     @Override
     public void onInstantiation(Component component) {
-
       inject(component);
     }
 
     @Override
     public void onInstantiation(Behavior behavior) {
-
       inject(behavior);
     }
 
@@ -186,7 +205,22 @@ public final class Wickject {
     @Override
     public Object getFieldValue(final Field field, Object fieldOwner) {
 
+      if (!this.context.containsKey(field.getType())) {
+        String message = formatErrorMessage(field, fieldOwner);
+        Wickjector.LOGGER.error(message);
+        throw new IllegalStateException(message);
+      }
+
       return this.context.get(field.getType());
+    }
+
+    private String formatErrorMessage(final Field field, Object fieldOwner) {
+      String name = field.getName();
+      String className = fieldOwner.getClass().getCanonicalName();
+      String typeName = field.getType().getCanonicalName();
+      String tpl = "Found a field '%s' in the class %s of type %s without a provided object.";
+      String message = String.format(tpl, name, className, typeName);
+      return message;
     }
 
     /**
@@ -201,9 +235,8 @@ public final class Wickject {
      */
     @Override
     public boolean supportsField(Field field) {
-
       return field.isAnnotationPresent(Inject.class);
     }
-
   }
+
 }

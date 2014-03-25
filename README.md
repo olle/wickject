@@ -17,6 +17,7 @@ For now, clone this repository, do a `mvn install` and then use the current SNAP
       <groupId>com.studiomediatech.wickject</groupId>
       <artifactId>wickject</artifactId>
       <version>[[PROJECT VERSION]]</version>
+      <scope>test</scope>
     </dependency>
 
 __2. Enhance your WicketTester with the Wickjects injector:__

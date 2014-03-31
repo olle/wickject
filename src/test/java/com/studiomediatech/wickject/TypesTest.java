@@ -32,7 +32,7 @@ public class TypesTest {
   }
 
   @Test
-  public void shouldInjectMockOfSuperTypeForAbstractType() {
+  public void shouldInjectObjectForConcreteType() {
     Wickject.addInjectorTo(this.tester).provides(new ImConcrete(), ImConcrete.class);
     Baz baz = new Baz();
     Assert.assertNotNull("Was not injected.", baz.concreteType);

@@ -15,8 +15,6 @@ import org.apache.wicket.injection.Injector;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.tester.WicketTester;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Now this is the story, all about how, this class got made, and where and why.
@@ -126,8 +124,6 @@ public final class Wickject {
 
     private final Wickjection injection;
 
-    static Logger LOGGER = LoggerFactory.getLogger(Wickject.class);
-
     private Wickjector(Wickjection injector) {
       this.injection = injector;
     }
@@ -207,7 +203,6 @@ public final class Wickject {
 
       if (!this.context.containsKey(field.getType())) {
         String message = formatErrorMessage(field, fieldOwner);
-        Wickjector.LOGGER.error(message);
         throw new IllegalStateException(message);
       }
 

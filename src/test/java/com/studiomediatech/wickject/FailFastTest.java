@@ -8,33 +8,27 @@ import org.apache.wicket.injection.Injector;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Assert;
 import org.junit.Test;
-import org.mockito.Matchers;
-import org.mockito.Mockito;
-import org.slf4j.Logger;
 
-public class LoggingTest {
+public class FailFastTest {
 
   @Test
-  public void ensureLogsWarningOnFieldFoundWithoutProvides() {
+  public void ensureThrowsWithSpecificMessage() {
 
     WicketTester tester = new WicketTester();
 
     Wickjector injector = Wickject.addInjectorTo(tester);
     injector.provides(Integer.valueOf(42), Integer.class);
 
-    Logger loggerMock = Mockito.mock(org.slf4j.Logger.class);
-    Wickjector.LOGGER = loggerMock;
+    String actual = "";
 
     try {
       new Foo();
     } catch (IllegalStateException ex) {
       Assert.assertTrue(ex instanceof IllegalStateException);
+      actual = ex.getMessage();
     } finally {
-      Mockito
-          .verify(loggerMock)
-          .error(
-              Matchers
-                  .eq("Found a field 'no' in the class com.studiomediatech.wickject.LoggingTest.Foo of type java.lang.String without a provided object."));
+      String expected = "Found a field 'no' in the class com.studiomediatech.wickject.FailFastTest.Foo of type java.lang.String without a provided object.";
+      Assert.assertEquals(expected, actual);
     }
 
   }

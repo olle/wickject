@@ -13,6 +13,8 @@ import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.injection.IFieldValueFactory;
 import org.apache.wicket.injection.Injector;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.proxy.IProxyTargetLocator;
+import org.apache.wicket.proxy.LazyInitProxyFactory;
 import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.tester.WicketTester;
 
@@ -156,7 +158,7 @@ public final class Wickject {
       Args.notNull(object, "object");
       Args.notNull(forType, "forType");
 
-      this.injection.context.put(forType, object);
+      this.injection.context.put(forType.getName(), object);
 
       return this;
     }
@@ -176,7 +178,7 @@ public final class Wickject {
       extends Injector
       implements IComponentInstantiationListener, IBehaviorInstantiationListener, IFieldValueFactory {
 
-    private final Map<Class<?>, Object> context = new HashMap<>();
+    private final Map<String, Object> context = new HashMap<>();
 
     public Wickjection(WebApplication application) {
       bind(application);
@@ -201,15 +203,27 @@ public final class Wickject {
     @Override
     public Object getFieldValue(final Field field, Object fieldOwner) {
 
-      if (!this.context.containsKey(field.getType())) {
-        String message = formatErrorMessage(field, fieldOwner);
+      String key = field.getType().getName();
+
+      if (!this.context.containsKey(key)) {
+        String message = formatMissingObjectErrorMessage(field, fieldOwner);
         throw new IllegalStateException(message);
       }
 
-      return this.context.get(field.getType());
+      final Object bean = this.context.get(key);
+
+      return LazyInitProxyFactory.createProxy(field.getType(), new IProxyTargetLocator() {
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public Object locateProxyTarget() {
+          return bean;
+        }
+      });
     }
 
-    private String formatErrorMessage(final Field field, Object fieldOwner) {
+    private String formatMissingObjectErrorMessage(final Field field, Object fieldOwner) {
       String name = field.getName();
       String className = fieldOwner.getClass().getCanonicalName();
       String typeName = field.getType().getCanonicalName();
@@ -232,6 +246,7 @@ public final class Wickject {
     public boolean supportsField(Field field) {
       return field.isAnnotationPresent(Inject.class);
     }
+
   }
 
 }

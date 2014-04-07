@@ -66,8 +66,10 @@ Happy blazingly fast testing with Wicket!
 
 #### Changelog
 
-* `v0.3.0` - No more Mr. Nice Guy, **Wickject** will now throw when it encounters fields for injections, that are not provided for with the `provides`-API.
+* `v0.4.0` - Serialization safe, by using lazy-init proxying.
 
-* `v0.2.0` - Minor API changes, trying out the more natural `addInjectorTo` instead of just `addInjector`.
+* `v0.3.0` - Fails fast when missing `provides` for fields.
+
+* `v0.2.0` - Changed API to `addInjectorTo`.
 
 * `v0.1.0` - Initial API, it workses... yesss it does precious.

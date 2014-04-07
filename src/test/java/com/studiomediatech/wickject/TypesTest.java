@@ -2,6 +2,10 @@ package com.studiomediatech.wickject;
 
 import javax.inject.Inject;
 
+import com.studiomediatech.wickject.typesteststuff.ImAnAbstractClass;
+import com.studiomediatech.wickject.typesteststuff.ImAnInterface;
+import com.studiomediatech.wickject.typesteststuff.ImConcrete;
+
 import org.apache.wicket.injection.Injector;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Assert;
@@ -9,6 +13,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class TypesTest {
+
+  public TypesTest() {
+    // OK
+  }
 
   private WicketTester tester;
 
@@ -38,21 +46,7 @@ public class TypesTest {
     Assert.assertNotNull("Was not injected.", baz.concreteType);
   }
 
-  interface ImAnInterface {
-    // OK
-  }
-
-  abstract class ImAnAbstractClass
-      implements ImAnInterface {
-    // OK
-  }
-
-  class ImConcrete
-      extends ImAnAbstractClass {
-    // OK
-  }
-
-  class Foo {
+  public static class Foo {
     @Inject
     ImAnInterface wiredInterfaceType;
 
@@ -61,7 +55,7 @@ public class TypesTest {
     }
   }
 
-  class Bar {
+  public static class Bar {
     @Inject
     ImAnAbstractClass wiredAbstractType;
 
@@ -70,7 +64,7 @@ public class TypesTest {
     }
   }
 
-  class Baz {
+  public static class Baz {
     @Inject
     ImConcrete concreteType;
 

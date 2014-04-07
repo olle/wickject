@@ -42,10 +42,12 @@ public class InjectionTest {
     FooService mockedService = Mockito.mock(FooService.class);
     injector.provides(mockedService, FooService.class);
 
+    Mockito.when(mockedService.foo()).thenReturn("mocked-foo");
+
     FooService injectedService = new Foo().foo;
 
     Assert.assertNotNull("Not injected", injectedService);
-    Assert.assertEquals("Not injected with same mock", mockedService, injectedService);
+    Assert.assertEquals("Not injected with same mock", mockedService.foo(), injectedService.foo());
   }
 
   @Test
@@ -58,13 +60,16 @@ public class InjectionTest {
     injector.provides(fooMock, FooService.class);
     injector.provides(barMock, BarService.class);
 
+    Mockito.when(fooMock.foo()).thenReturn("mocked-foo");
+    Mockito.when(barMock.bar()).thenReturn("mocked-bar");
+
     Foobar foobar = new Foobar();
 
     Assert.assertNotNull("Not injected", foobar.foo);
-    Assert.assertEquals("Not injected with same mock", fooMock, foobar.foo);
+    Assert.assertEquals("Not injected with same mock", fooMock.foo(), foobar.foo.foo());
 
     Assert.assertNotNull("Not injected", foobar.bar);
-    Assert.assertEquals("Not injected with same mock", barMock, foobar.bar);
+    Assert.assertEquals("Not injected with same mock", barMock.bar(), foobar.bar.bar());
   }
 
   @Test
@@ -76,7 +81,7 @@ public class InjectionTest {
     FooComponent foo = new FooComponent("foo");
 
     Assert.assertNotNull("Was not injected", foo.fooService);
-    Assert.assertEquals("Not injected with same object", myFoo, foo.fooService);
+    Assert.assertEquals("Not injected with same object", myFoo.foo(), foo.fooService.foo());
   }
 
   @Test
@@ -90,30 +95,30 @@ public class InjectionTest {
     fooComponent.add(bar);
 
     Assert.assertNotNull("Was not injected", bar.barService);
-    Assert.assertEquals("Not injected with same object", myBar, bar.barService);
+    Assert.assertEquals("Not injected with same object", myBar.bar(), bar.barService.bar());
   }
 
   private interface FooService {
-    void foo();
+    String foo();
   }
 
   private interface BarService {
-    void bar();
+    String bar();
   }
 
   private class MyFoo
       implements FooService {
     @Override
-    public void foo() {
-      // ok
+    public String foo() {
+      return "real-foo";
     }
   }
 
   private class MyBar
       implements BarService {
     @Override
-    public void bar() {
-      // Ok
+    public String bar() {
+      return "real-bar";
     }
   }
 
